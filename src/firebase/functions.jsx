@@ -15,13 +15,15 @@ export const uploadImage = (storageRef, selectedFile) => {
 export const getImage = (imagesRef, selectedFile) => {
   return listAll(imagesRef)
     .then((res) => {
-      res.items.forEach((item) => {
+        const item = res.items.find(i => i._location.path_ == selectedFile.name);
+        
         const currentItem = item._location.path_;
+        
         if (currentItem === selectedFile.name)
-          getDownloadURL(item).then(url => {
-            return true;
-          })
-      });
+            return getDownloadURL(item).then(url => {
+              return url;
+            })
+      
     }).catch((error) => {
       console.log(error);
     });

@@ -16,25 +16,19 @@ export const CardInitial = ({ setCurrent, selectedFile, setSelectedFile, setImag
     hiddenFileInput.current.click();
   };
 
-  const submitImage = () => {
+  const submitImage = async () => {
     setCurrent(1);    
     const storageRef = ref(storage, selectedFile.name);
     
     if (uploadImage(storageRef, selectedFile)) {
-          const listRef = ref(storage, '/');
-              listAll(listRef)
-                .then((res) => {
-                  res.items.forEach((item) => {
-                    const currentItem = item._location.path_;
-                    if (currentItem === selectedFile.name)
-                      getDownloadURL(item).then(url => {
-                        setImageUrl(url);
-                        setCurrent(2);
-                      })
-                  });
-                }).catch((error) => {
-                  console.log(error);
-                });
+          const imagesRef = ref(storage, '/');
+      
+          const url = await getImage(imagesRef, selectedFile);
+      
+          if (url) {
+            setImageUrl(url);
+            setCurrent(2);
+          }
     }
   }
 
